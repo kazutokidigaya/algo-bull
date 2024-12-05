@@ -138,10 +138,29 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',  # Default to localhost for local development
+        'PORT': 5432,         # Default port for PostgreSQL
+        'NAME': 'test_db',    # Name of the test database
+        'USER': 'postgres',   # Default username
+        'PASSWORD': '',       # Provide the password if needed
+    }
 }
+
+
+DATABASES['default'] = dj_database_url.config(
+    default=os.getenv('DATABASE_URL', ''),  # Read from environment variable or fallback to default
+)
+
+
+if 'CI' in os.environ:
+    DATABASES['default']['HOST'] = 'localhost'  # Adjust for local PostgreSQL
+    DATABASES['default']['PORT'] = 5432
+    DATABASES['default']['NAME'] = 'test_db'
+    DATABASES['default']['USER'] = 'postgres'
+    DATABASES['default']['PASSWORD'] = 'karan3103@' 
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-default-key')  # Use SECRET_KEY from environment or fallback
 
