@@ -138,35 +138,34 @@ REST_FRAMEWORK = {
     ],
 }
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',  # Default to localhost for local development
-        'PORT': 5432,         # Default port for PostgreSQL
-        'NAME': 'test_db',    # Name of the test database
-        'USER': 'postgres',   # Default username
-        'PASSWORD': '',       # Provide the password if needed
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",  # Use SQLite for local dev
     }
 }
 
+# Adjust database settings for production and testing environments
+if 'CI' in os.environ:  # CI environment (e.g., GitHub Actions)
+    DATABASES['default'] = dj_database_url.config(
+        default=os.getenv('DATABASE_URL')  # Use the DATABASE_URL from secrets
+    )
+else:  # Local development
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',
+        'PORT': 5432,
+        'NAME': 'test_db',
+        'USER': 'postgres',
+        'PASSWORD': '',  # Your local DB password here if needed
+    }
 
-DATABASES['default'] = dj_database_url.config(
-    default=os.getenv('DATABASE_URL', ''),  # Read from environment variable or fallback to default
-)
+# Secret key management for local and CI environments
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')  # Fetch SECRET_KEY from env variable
 
-
-if 'CI' in os.environ:
-    DATABASES['default']['HOST'] = 'localhost'  # Adjust for local PostgreSQL
-    DATABASES['default']['PORT'] = 5432
-    DATABASES['default']['NAME'] = 'test_db'
-    DATABASES['default']['USER'] = 'postgres'
-    DATABASES['default']['PASSWORD'] = 'karan3103@' 
-
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-default-key')  # Use SECRET_KEY from environment or fallback
-
-
+# Other settings
 ALLOWED_HOSTS = ['*']
-
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-a140f.up.railway.app',
 ]
