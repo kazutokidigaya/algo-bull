@@ -140,32 +140,10 @@ REST_FRAMEWORK = {
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",  # Use SQLite for local dev
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
-
-# Adjust database settings for production and testing environments
-if 'CI' in os.environ:  # CI environment (e.g., GitHub Actions)
-    DATABASES['default'] = dj_database_url.config(
-        default=os.getenv('DATABASE_URL')  # Use the DATABASE_URL from secrets
-    )
-else:  # Local development
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',
-        'PORT': 5432,
-        'NAME': 'test_db',
-        'USER': 'postgres',
-        'PASSWORD': '',  # Your local DB password here if needed
-    }
-
-# Secret key management for local and CI environments
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')  # Fetch SECRET_KEY from env variable
-
-# Other settings
 ALLOWED_HOSTS = ['*']
+
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-a140f.up.railway.app',
 ]
