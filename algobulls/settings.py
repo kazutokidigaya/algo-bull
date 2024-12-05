@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os  # This is missing in your current file
 import dj_database_url  # Ensure this is installed in your environment
-
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -142,6 +142,10 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-default-key')  # Use SECRET_KEY from environment or fallback
+
+
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
